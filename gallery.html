@@ -273,6 +273,17 @@ function getImageThumbnailThrottled(url, cb, passURL) {
   }
 }
 
+// solve Uncaught URIError: URI malformed
+function safeDecodeURIComponent(name) {
+	try  {
+		out = decodeURIComponent(name);
+	}
+	catch(err) {
+		out = decodeURIComponent(unescape(name));
+	}
+	return out; 
+}
+
 function addDeferredThumb(thumbs, href) {
   var niceName;
   if (href.lastIndexOf("/")>=0)
@@ -284,11 +295,11 @@ function addDeferredThumb(thumbs, href) {
     imageInfo[href].thumb = url;
     im.innerHTML = 
       '<div class="thumbimage" style="background-image:url('+url+');transform:rotate('+rotate+'deg)"></div>'+
-      '<div class="caption">'+decodeURIComponent(niceName)+'</div>';
+      '<div class="caption">'+safeDecodeURIComponent(niceName)+'</div>';
   }   
 
   var im = document.createElement("DIV");
-  im.innerHTML = '<div class="caption">'+decodeURIComponent(niceName)+'</div><div class="thumbicon">&#8987;</div>';
+  im.innerHTML = '<div class="caption">'+safeDecodeURIComponent(niceName)+'</div><div class="thumbicon">&#8987;</div>';
   im.className = "thumb";
   im.setAttribute("href", href);
   im.onclick = onThumbClicked;
@@ -312,7 +323,7 @@ function addFolder(thumbs, href) {
 
   var a = document.createElement("A");
   a.href = window.location.pathname+"?"+href;
-  a.innerHTML = '<div class="thumb folder"><div class="caption">'+decodeURIComponent(niceName)+'</div><div class="thumbicon">&#128193;</div></div>';
+  a.innerHTML = '<div class="thumb folder"><div class="caption">'+safeDecodeURIComponent(niceName)+'</div><div class="thumbicon">&#128193;</div></div>';
   thumbs.appendChild(a);
 }
 
